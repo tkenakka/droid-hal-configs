@@ -293,6 +293,47 @@ clean_files() { sed 's_^./_/_'; }
 
 (cd $RPM_BUILD_ROOT; find .%{_datadir}/ssu/kickstart/ -type f) | clean_files > tmp/kickstart-configuration.files
 
+# Customize product configuration
+OFONONOPLUGIN=sparse/var/lib/environment/ofono/noplugin.conf
+%if 0%{?have_rilmodem:1}
+  sed -i '/,ril\\/d' $OFONONOPLUGIN
+  sed -i '/,rildev\\/d' $OFONONOPLUGIN
+  sed -i '/,rilmodem\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_ofono_smshistory:1}
+  sed -i '/,sms_history\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_ota_push:1}
+  sed -i '/,push_forwarder\\/d' $OFONONOPLUGIN
+  sed -i '/,push_notification\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_smartmessaging:1}
+  sed -i '/,smart_messaging\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_ofono_mnclength:1}
+  sed -i '/,mnclength\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_cellulardata_provision:1}
+  sed -i '/,provision\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_cellular_nettime:1}
+  sed -i '/,nettime\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_connman_private_nw:1}
+  sed -i '/,connman\\/d' $OFONONOPLUGIN
+%endif
+
+%if 0%{?have_atmodem:1}
+  sed -i '/,atmodem\\/d' $OFONONOPLUGIN
+%endif
+
 ################################################################
 %post sailfish
 %{_bindir}/add-oneshot dconf-update || :
